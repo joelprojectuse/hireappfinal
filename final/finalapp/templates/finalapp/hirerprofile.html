@@ -1,0 +1,193 @@
+{%extends 'finalapp/layout/base.html '%} {% block title %}Profile{% endblock title %}{% block content %}
+{% comment %} <nav class="navbar mainnav navbar-expand-sm fixed-top py-1">
+  {% include 'finalapp/inc/hirermenu.html' %}
+</nav> {% endcomment %}
+<div class="py-2"></div>
+
+<div class="container py-5 mt-4">
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="card mb-4">
+        <div class="card-body text-center">
+          <i class="fa fa-user" style="font-size: 150px"></i>
+          <h5 class="my-3">{{request.user.username}}</h5>
+
+          <div class="d-flex justify-content-center mb-2">
+            <a class="btn btn-primary" role="button" id="logoutBtn">Logout</a>
+            <a
+              class="btn btn-outline-primary ms-2"
+              id="SignoutBtn"
+              role="button"
+              >Signout</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <form id="profileForm">
+            {% csrf_token %}
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Name</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="name"
+                  id="id_name"
+                  value="{{ request.user.name }}"
+                />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Email</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  id="id_email"
+                  value="{{ request.user.email }}"
+                />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Phone</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="phone_number"
+                  id="id_phone_number"
+                  value="{{ request.user.phone_number }}"
+                />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Preffered Location 1</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="ploc1"
+                  id="idploc1"
+                  value="{{ request.user.ploc1 }}"
+                />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Preffered Location 2</h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="ploc2"
+                  id="idploc2"
+                  value="{{ request.user.ploc2 }}"
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-3"></div>
+              <div class="col-sm-9 text-secondary">
+                <input
+                  type="submit"
+                  class="btn btn-primary px-4"
+                  value="Save Changes"
+                  id="saveChangesBtn"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="py-4"></div>
+{% endblock content %}
+<!-- profile.html -->
+{% block script %}
+
+<script>
+  document.getElementById("logoutBtn").addEventListener("click", function () {
+    var confirmLogout = confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      // Handle the logout logic here if needed
+      window.location.href = "{% url 'logout'%}";
+    }
+  });
+
+  document.getElementById("SignoutBtn").addEventListener("click", function () {
+    var confirmLogout = confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      // Handle the logout logic here if needed
+      window.location.href = "{% url 'signout'%}";
+    }
+  });
+
+  document
+    .getElementById("saveChangesBtn")
+    .addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent the default form submission behavior
+      // Validate phone number
+      var phoneNumberInput = document.getElementById("id_phone_number");
+      var phoneNumber = phoneNumberInput.value.trim();
+      if (!isValidPhoneNumber(phoneNumber)) {
+        alert("Please enter a valid phone number.");
+        return;
+      }
+      // Gather form data
+      var formData = new FormData(document.getElementById("profileForm"));
+
+      // Send AJAX request
+      $.ajax({
+        url: "{% url 'update_profile' %}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+          if (data.success) {
+            // Update form values with new data
+            // Adjust the IDs based on the actual form input names
+            document.getElementById("id_name").value = data.user.name;
+            document.getElementById("id_email").value = data.user.email;
+            document.getElementById("id_phone_number").value =
+              data.user.phone_number;
+            document.getElementById("idploc1").value = data.user.ploc1;
+            document.getElementById("idploc2").value = data.user.ploc2;
+          } else {
+            // Display error message
+            alert(data.message);
+          }
+        },
+        error: function () {
+          // Handle AJAX error
+          alert("Error occurred while updating profile.");
+        },
+      });
+    });
+  // Function to validate Indian phone number
+  function isValidPhoneNumber(phoneNumber) {
+    var phoneRegex = /^\d{10}$/; // Indian phone numbers are 10 digits long
+    return phoneRegex.test(phoneNumber);
+  }
+</script>
+{% endblock script %}

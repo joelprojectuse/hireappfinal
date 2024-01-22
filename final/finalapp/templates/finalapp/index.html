@@ -1,0 +1,177 @@
+{% extends 'finalapp/layout/base.html' %}
+{% block title %}home{% endblock title %} {%block content%}
+<div class="py-4"></div>
+<div class="container mt-3">
+  <div class="row">
+    {%for i in hiring %} {%if i.total_members >= i.selected_user|length|add:1%}
+    <div class="col-lg-4 col-md-6 col-sm-12 py-4">
+      <div class="card jobcard mx-auto">
+        <a
+          href="#"
+          style="color: #83577500"
+          data-bs-toggle="modal"
+          data-bs-target="#jd{{ i.id }}"
+        >
+          <div class="cont">
+            <div class="text-center date">
+              <span class="badge rounded-pill badgedate">{{i.event_date}}</span>
+            </div>
+            <div class="text-center content">
+              <h4><b>Catering in {{i.event_location}}</b></h4>
+              <p id="vacancy-{{ i.id }}">
+                (vacancy for <span id="vacancy-count-{{ i.id }}"></span>)
+              </p>
+            </div>
+            <div class="btnmoreaccept">
+              <span class="badge rounded-pill badgetime"
+                >{{i.start_time}}-{{i.end_time}}</span
+              >
+              <span
+                class="badge rounded-pill badgetime"
+                id="day-display-{{ i.id }}"
+              ></span>
+            </div></div
+        ></a>
+        <div
+          class="modal fade"
+          id="jd{{ i.id }}"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5
+                  class="modal-title w-100 text-center"
+                  id="exampleModalLabel"
+                >
+                  Accept form
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row py-2">
+                  <div class="col-sm-12 text-center">
+                    <div class="row">
+                      <div class="col-6 col-sm-5 d-flex flex-row-reverse">
+                        <b>Date:</b>
+                      </div>
+                      <div class="col-6 col-sm-7">{{i.event_date}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row py-2">
+                  <div class="col-sm-12 text-center">
+                    <div class="row">
+                      <div class="col-6 col-sm-5 d-flex flex-row-reverse">
+                        <b>Starting time:</b>
+                      </div>
+                      <div class="col-6 col-sm-7">{{i.start_time}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row py-2">
+                  <div class="col-sm-12 text-center">
+                    <div class="row">
+                      <div class="col-6 col-sm-5 d-flex flex-row-reverse">
+                        <b>Ending time:</b>
+                      </div>
+                      <div class="col-6 col-sm-7">{{i.end_time}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row py-2">
+                  <div class="col-sm-12 text-center">
+                    <div class="row">
+                      <div class="col-6 col-sm-5 d-flex flex-row-reverse">
+                        <b>Catering location:</b>
+                      </div>
+                      <div class="col-6 col-sm-7">{{i.event_location}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row py-4">
+                  <div class="col-sm-12 text-center">
+                    <p>
+                      (Further information will be given before the event you
+                      can get it in job section)
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <a
+                  class="btn btn-primary"
+                  href="{% url 'add_to_job' i.id %}"
+                  role="button"
+                  >Accept</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Inline JavaScript to calculate and set the vacancy count
+      var totalMembers = {{ i.total_members }};
+      var selectedUserLength = {{ i.selected_user|length }};
+      var vacancyCount = totalMembers - selectedUserLength;
+      document.getElementById('vacancy-count-{{ i.id }}').textContent = vacancyCount;
+    </script>
+    {%endif%} {%endfor%} {% comment %}
+    <div class="col-lg-4 col-md-6 col-sm-12 py-4">
+      <div class="card jobcard mx-auto">
+        <a href="#" style="color: #83577500">
+          <div class="cont">
+            <div class="text-center date">
+              <span class="badge rounded-pill badgedate">12/10/2023</span>
+            </div>
+            <div class="text-center content">
+              <h4><b>Catering in thoraiyur hai my name is</b></h4>
+              <p>(vacancy for 5)</p>
+            </div>
+            <div class="btnmoreaccept">
+              <span class="badge rounded-pill badgetime">11:30am-1:30pm</span>
+              <span class="badge rounded-pill badgetime">Sunday</span>
+            </div>
+          </div></a
+        >
+      </div>
+    </div>
+    {% endcomment %}
+  </div>
+</div>
+<div class="py-4"></div>
+<div class="py-4"></div>
+
+{% endblock content %} {% block script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    {% for i in hiring %}
+      var eventDate = new Date("{{ i.event_date }}");
+      var dayOfWeek = getDayOfWeek(eventDate);
+      document.getElementById('day-display-{{ i.id }}').innerText = dayOfWeek;
+    {% endfor %}
+
+    function getDayOfWeek(date) {
+      const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const dayIndex = date.getDay();
+      return daysOfWeek[dayIndex];
+    }
+  });
+</script>
+{% endblock script %}

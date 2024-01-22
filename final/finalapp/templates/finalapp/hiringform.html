@@ -1,0 +1,221 @@
+{%extends 'finalapp/layout/base.html '%} {% block title %}Hiring form{% endblock title %}{% block content %}
+
+<div class="py-2"></div>
+<div class="py-4"></div>
+
+<section class="vh-100">
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6 mb-3">
+          <div
+            class="card cardreg"
+            style="border-radius: 15px; background-color: white"
+          >
+            <div
+              class="card-body p-5"
+              style="
+                margin: 15px;
+                background-color: #e7eafa;
+                border-radius: 15px;
+              "
+            >
+              <h2 class="text-uppercase text-center mb-5">Hiring form</h2>
+              <form method="post" action="{% url 'hiringform' %}">
+                {% csrf_token %}
+                <div class="form-outline mb-4">
+                  <label for="manager_name" class="form-label"
+                    ><b>Event manager name:</b></label
+                  ><input
+                    type="text"
+                    name="manager_name"
+                    id="manager_name"
+                    class="form-control"
+                    placeholder="Kumar"
+                    required
+                  />
+                </div>
+                <div class="form-outline mb-4">
+                  <label for="event_date" class="form-label"
+                    ><b>Date of the event: </b></label
+                  >
+                  <input
+                    type="date"
+                    name="event_date"
+                    id="event_date"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-outline mb-4">
+                  <label for="start_time" class="form-label"
+                    ><b>Event starting time: </b></label
+                  >
+                  <input
+                    type="time"
+                    name="start_time"
+                    id="start_time"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-outline mb-4">
+                  <label for="end_time" class="form-label"
+                    ><b>Event ending time: </b></label
+                  >
+                  <input
+                    type="time"
+                    name="end_time"
+                    id="end_time"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-outline mb-4">
+                  <label for="total_members" class="form-label"
+                    ><b>Total members needed: </b></label
+                  >
+                  <input
+                    type="number"
+                    name="total_members"
+                    id="total_members"
+                    min="5"
+                    max="100"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-outline mb-4">
+                  <label for="event_location" class="form-label"
+                    ><b>Event location: </b></label
+                  >
+                  <input
+                    type="tetx"
+                    name="event_location"
+                    id="event_location"
+                    class="form-control"
+                    placeholder="Thoraiyur"
+                    required
+                  />
+                </div>
+
+                <div class="form-outline mb-4">
+                  <label for="building_name" class="form-label"
+                    ><b>Mahal or building name:</b></label
+                  ><input
+                    type="text"
+                    name="building_name"
+                    id="building_name"
+                    class="form-control"
+                    placeholder="roundana mandabam"
+                    required
+                  />
+                </div>
+
+                <div class="d-flex justify-content-center py-4">
+                  <button
+                    type="submit"
+                    class="btn btnreg btn-block btn-lg gradient-custom-4 text-body"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="py-2"></div>
+<div class="py-4"></div>
+{%endblock content%} {% comment %} {%block script%}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const dateInput = document.getElementById("event_date");
+
+    dateInput.addEventListener("input", function () {
+      const selectedDate = new Date(dateInput.value);
+      const currentDate = new Date();
+      const threeMonthsLater = new Date();
+      threeMonthsLater.setMonth(currentDate.getMonth() + 3);
+
+      if (selectedDate < currentDate || selectedDate > threeMonthsLater) {
+        dateInput.setCustomValidity(
+          "Date should not be in the past and should be within 3 months from today."
+        );
+      } else {
+        dateInput.setCustomValidity("");
+      }
+    });
+  });
+</script>
+{%endblock script%} {% endcomment %} {% block script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const dateInput = document.getElementById("event_date");
+    const startTimeInput = document.getElementById("start_time");
+    const endTimeInput = document.getElementById("end_time");
+
+    dateInput.addEventListener("input", function () {
+      validateDate();
+    });
+
+    startTimeInput.addEventListener("input", function () {
+      validateTimeRange();
+    });
+
+    endTimeInput.addEventListener("input", function () {
+      validateTimeRange();
+    });
+
+    function validateDate() {
+      const selectedDate = new Date(dateInput.value);
+      const currentDate = new Date();
+      const threeMonthsLater = new Date();
+      threeMonthsLater.setMonth(currentDate.getMonth() + 3);
+
+      if (selectedDate < currentDate || selectedDate > threeMonthsLater) {
+        dateInput.setCustomValidity(
+          "Date should not be in the past and should be within 3 months from today."
+        );
+      } else {
+        dateInput.setCustomValidity("");
+      }
+
+      // Reset time inputs validity when date changes
+      startTimeInput.setCustomValidity("");
+      endTimeInput.setCustomValidity("");
+    }
+
+    function validateTimeRange() {
+      const startTime = new Date(`${dateInput.value} ${startTimeInput.value}`);
+      const endTime = new Date(`${dateInput.value} ${endTimeInput.value}`);
+      const maxAllowedDifference = 5 * 60 * 60 * 1000; // 5 hours in milliseconds
+      const minTime = new Date(`${dateInput.value} 04:00:00`);
+      const maxTime = new Date(`${dateInput.value} 22:00:00`);
+      const minDifference = 60 * 60 * 1000; // 1 hour in milliseconds
+
+      if (
+        endTime - startTime > maxAllowedDifference ||
+        startTime < minTime ||
+        endTime > maxTime
+      ) {
+        startTimeInput.setCustomValidity(
+          "Invalid time range. Ensure the difference is less than or equal to 5 hours, and between 4:00 AM and 10:00 PM."
+        );
+        endTimeInput.setCustomValidity("");
+      } else if (endTime - startTime < minDifference) {
+        startTimeInput.setCustomValidity(
+          "Invalid time range. Ensure the difference is at least 1 hour."
+        );
+        endTimeInput.setCustomValidity("");
+      } else {
+        startTimeInput.setCustomValidity("");
+        endTimeInput.setCustomValidity("");
+      }
+    }
+  });
+</script>
+{% endblock script %}

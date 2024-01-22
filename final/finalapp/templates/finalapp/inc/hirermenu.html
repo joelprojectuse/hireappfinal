@@ -1,0 +1,72 @@
+{%load static%} 
+<nav class="navbar mainnav navbar-expand-sm fixed-top py-1">
+ 
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'hiringform'%}">
+      <img
+        src="{% static 'image/logo3.png'%}"
+        alt="Hirelogo"
+        style="width: 80px"
+      />
+    </a>
+
+    <div class="collapse navbar-collapse" id="mynavbar">
+      <ul class="navbar-nav mx-auto">
+        
+        <li class="nav-item me-4">
+          <a
+            class="nav-link {% if 'hiringform' in request.path %}active{% endif %}"
+            href="{% url 'hiringform'%}"
+            >Form</a
+          >
+        </li><li class="nav-item me-4">
+          <a
+            class="nav-link {% if 'hired' in request.path %}active{% endif %}"
+            href="{% url 'hired'%}"
+            >Hired</a
+          >
+        </li>
+        <li class="nav-item me-4">
+          <a
+            class="nav-link {% if 'hirerprofile' in request.path %}active{% endif %}"
+            href="{% url 'hirerprofile' %}"
+            >User</a
+          >
+        </li>
+      </ul>
+    </div>
+    <div class="d-flex">
+      <span class="badge hirerbadge">Hirer</span>
+      {% comment %} {% if request.user.is_authenticated %}
+      <p>{{request.user}}</p>
+      {%endif%} {% endcomment %}
+    </div>
+  </div>
+
+</nav>
+
+
+<nav class="mobile_navbar navbar-expand-sm fixed-bottom">
+  <div class="container">
+    <div class="mobile_menu" id="mobilenavbar">
+      <div> 
+        <a href="{% url 'hiringform'%}" class="btn" role="button"
+          ><i class="fa fa-home" style="font-size: 25px"></i>
+          <p>Form</p></a
+        >
+      </div><div>
+        <a href="{% url 'hired'%}" class="btn" role="button"
+          ><i class="fa fa-briefcase" style="font-size: 25px"></i>
+          <p>Hired</p></a
+        >
+      </div>
+     
+      <div>
+        <a href="{% url 'hirerprofile'%}" class="btn" role="button"
+          ><i class="fa fa-user" style="font-size: 25px"></i>
+          <p>User</p></a
+        >
+      </div>
+    </div>
+  </div>
+</nav>

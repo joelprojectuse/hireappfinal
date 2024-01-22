@@ -1,0 +1,98 @@
+{%extends 'finalapp/layout/base.html '%}{% block title %}Register{% endblock title %} {% block content %}
+<section class="vh-100 bg-image">
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div
+            class="card cardreg"
+            style="border-radius: 15px; background-color: white"
+          >
+            <div
+              class="card-body p-5"
+              style="
+                margin: 15px;
+                background-color: #e7eafa;
+                border-radius: 15px;
+              "
+            >
+              <h2 class="text-uppercase text-center mb-5">Register</h2>
+
+              <form method="post" action="">
+                {% csrf_token %}
+                <div class="form-outline mb-4">
+                  <label for="" class="form-label"><b>User name</b></label
+                  >{{form.username}} {% if form.errors.username %}
+                  <label class="text-danger">{{ form.errors.username }}</label>
+                  {% endif %}
+                </div>
+
+                <div class="form-outline mb-4">
+                  <label for="" class="form-label"><b>User email</b></label
+                  >{{form.email}} {% if form.errors.email %}
+                  <label class="text-danger">{{ form.errors.email }}</label>
+                  {% endif %}
+                </div>
+
+                <div class="form-outline mb-4">
+                  <label for="" class="form-label"><b>Password</b></label
+                  >{{form.password1}} {% if form.errors.password1 %}
+                  <label class="text-danger">{{ form.errors.password1 }}</label>
+                  {% endif %}
+                </div>
+
+                <div class="form-outline mb-4">
+                  <label for="" class="form-label"
+                    ><b>Confirm password</b></label
+                  >{{form.password2}} {% if form.errors.password2 %}
+                  <label class="text-danger">{{ form.errors.password2 }}</label>
+                  {% endif %}
+                </div>
+                <!-- Phone number -->
+                <div class="form-outline mb-4">
+                  <label for="" class="form-label"><b>Phone number</b></label>
+                  {{ form.phone_number }} {% if form.errors.phone_number %}
+                  <label class="text-danger"
+                    >{{ form.errors.phone_number }}</label
+                  >
+                  {% endif %}
+                </div>
+                {% comment %}
+                <div class="form-outline mb-4">
+                  <label for="" class="form-label"><b>Phone number</b></label
+                  ><input
+                    type="tel"
+                    name="phone"
+                    id="phone"
+                    class="form-control"
+                    placeholder="123-45-678"
+                    pattern="[6789][0-9]{9}"
+                    placeholder="9999999999"
+                    required
+                  />
+                </div>
+                {% endcomment %}
+                <div class="d-flex justify-content-center">
+                  <button
+                    type="submit"
+                    class="btn btnreg btn-block btn-lg gradient-custom-4 text-body"
+                  >
+                    Register
+                  </button>
+                </div>
+
+                <p class="text-center text-muted mt-5 mb-0">
+                  Have an account?
+                  <a href="{% url 'login'%}" class="fw-bold text-body"
+                    ><u>Login here</u></a
+                  >
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}
